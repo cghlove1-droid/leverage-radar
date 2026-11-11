@@ -95,11 +95,11 @@ def require_license(config, key, now):
 class Massive:
     """Daily aggregate close, split adjusted, NOT dividend adjusted."""
     def __init__(self, api_key, get=fetch): self.key, self.get = api_key, get
-    def load(self, end):
+    def load(self, end, start='2010-03-11'):
         if not self.key: raise DataError('missing_massive_api_key')
         by_symbol = {}
         for symbol in SYMBOLS:
-            url = f'https://api.massive.com/v2/aggs/ticker/{symbol}/range/1/day/2010-03-11/{end}'
+            url = f'https://api.massive.com/v2/aggs/ticker/{symbol}/range/1/day/{start}/{end}'
             data = self.get(url, self.key, {'adjusted':'true','sort':'asc','limit':50000})
             if data.get('status') not in ('OK', 'DELAYED') or data.get('adjusted') is not True or data.get('next_url'):
                 raise DataError('invalid_massive_response')

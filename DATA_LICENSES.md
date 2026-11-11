@@ -20,3 +20,7 @@
 ## 권한 설정의 의미
 
 `config/licenses.json`은 허가를 발급하는 파일이 아닙니다. 확보한 계약을 운영자가 확인했다는 기록입니다. `public_display`, `raw_redistribution` 둘 다 true이고, `reference`, `attribution`, 유효한 `valid_until`이 있어야 수집·빌드가 진행됩니다. 계약서 자체나 비공개 계약번호·개인정보를 커밋하지 말고 `reference`에는 비민감 내부 참조명만 쓰세요. 실제 계약 범위·갱신·종료에 따른 데이터 삭제는 운영자가 관리해야 합니다. 기존 Cloudflare 배포는 라이선스 파일 수정만으로 삭제되지 않습니다. 계약 종료 시 사이트와 저장 이력을 계약에 맞게 정리해야 합니다.
+
+## 개인용 아침 보고서 모드 (2026-11-11 추가)
+
+개인 보고서는 공개 재배포 모드와 별개입니다. [PERSONAL_REPORT.md](PERSONAL_REPORT.md)의 개인용 약관과 보관 방식으로 실행하며, 개인용 데이터를 공개 JSON·Git 이력·Pages에 반영하지 않습니다. FRED 공식 CSV 다운로드에서 VIX/스프레드 실제 연결을 확인했습니다. ETF는 Massive 무료 개인용 API 키가 필요하며 아직 미연결입니다.

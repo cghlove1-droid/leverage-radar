@@ -6,3 +6,8 @@ dist/
 .env.*
 node_modules/
 playwright-report/
+
+# Personal data must never enter the public repository
+personal-output/
+reports/
+*.private.json
