@@ -1,0 +1,5 @@
+{
+  "prices": {"provider":"massive","public_display":false,"raw_redistribution":false,"reference":"","attribution":"","valid_until":"2000-01-01"},
+  "vix": {"provider":"fred","public_display":false,"raw_redistribution":false,"reference":"","attribution":"","valid_until":"2000-01-01"},
+  "hySpread": {"provider":"fred","public_display":false,"raw_redistribution":false,"reference":"","attribution":"","valid_until":"2000-01-01"}
+}

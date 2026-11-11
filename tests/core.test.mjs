@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {validate,validDate,drawdown,rsi,calculate,sentiment,cutoff,freshness,expectedSession} from '../assets/core.mjs';
+const rows=[100,80,120,60].map((p,i)=>({date:`2026-11-0${i+1}`,QQQ:p,TQQQ:p,SOXL:p}));
+test('running peak and MDD',()=>assert.deepEqual(drawdown(rows,'QQQ').map(x=>Math.round(x.value)),[0,-20,0,-50]));
+test('Wilder RSI rising, falling, flat, insufficient',()=>{assert.equal(rsi(Array.from({length:30},(_,i)=>i)),100);assert.equal(rsi(Array.from({length:30},(_,i)=>30-i)),0);assert.equal(rsi(Array(30).fill(10)),50);assert.equal(rsi([1,2]),null);});
+test('RSI published Wilder reference',()=>{const p=[44.34,44.09,44.15,43.61,44.33,44.83,45.10,45.42,45.84,46.08,45.89,46.03,45.61,46.28,46.28];assert.ok(Math.abs(rsi(p)-70.464)<.001);});
+test('amount calculator units',()=>{const c=calculate(40,[{price:60,value:600},{price:40,value:400}],'amount');assert.equal(c.total,1000);assert.equal(c.shares,20);assert.equal(c.avg,50);assert.ok(Math.abs(c.pnl+20)<1e-10);assert.equal(c.recovery,25);});
+test('quantity and already recovered',()=>{const c=calculate(100,[{price:50,value:2},{price:0,value:0}],'quantity');assert.equal(c.total,100);assert.equal(c.avg,50);assert.equal(c.recovery,0);assert.equal(c.value,200);});
+test('invalid calculator inputs',()=>{for(const [now,orders]of [[0,[{price:1,value:1}]],[10,[{price:-1,value:1}]],[10,[{price:0,value:1}]],[10,[{price:NaN,value:2}]],[Infinity,[{price:1,value:1}]],[1,[{price:1e308,value:1e308}]]])assert.throws(()=>calculate(now,orders,'quantity'));});
+test('strict dates and duplicates',()=>{assert.equal(validDate('2026-02-30'),false);assert.equal(validDate('2024-02-29'),true);assert.throws(()=>validate([...rows,rows[0]]));assert.throws(()=>validate(rows.map(r=>({...r,QQQ:NaN}))));assert.deepEqual(validate([...rows].reverse()),rows);});
+test('calendar-year ranges including leap day',()=>{assert.equal(cutoff('2024-02-29',1),'2023-02-28');assert.equal(cutoff('2026-11-10',5),'2021-11-10');});
+test('sentiment requires every component',()=>{assert.equal(sentiment({rsi:50,delta:0,dd:0,vix:null,spread:3}),null);assert.equal(sentiment({rsi:50,delta:0,dd:0,vix:10,spread:2}),80);});
+test('freshness respects sessions not weekends',()=>{const sessions=[{date:'2026-11-25',close:'2026-11-25T21:00:00Z'},{date:'2026-11-27',close:'2026-11-27T18:00:00Z'}];const c={coverage_end:'2026-12-31',sessions};assert.equal(expectedSession(c,new Date('2026-11-27T17:59Z')),'2026-11-25');assert.equal(freshness('2026-11-25','2026-11-27',sessions),false);assert.equal(freshness('2026-11-25','2026-11-27',sessions,3),true);assert.equal(expectedSession(c,new Date('2027-01-01')),null);});
